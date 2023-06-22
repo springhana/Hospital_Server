@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnosis</title>
+    <link rel="stylesheet" th:href="@{/css/signPatient.css}">
+</head>
+<body>
+<div class="signPatient">
+    <div class="signPatient_inner">
+        <div class="signPatient_contain">
+
+            <div class="patient_Nav_bar">
+                <span class="patient_Link"><a href="/hospital/userLogin">자기 정보 보기</a></span>
+                <span class="patient_Link"><a href="/hospital/doctorLogin">의사</a></span>
+                <span class="patient_Link"><a href="/hospital/nurseLogin">간호사</a></span>
+                <span class="patient_Link"><a href="/hospital">진료 신청</a></span>
+            </div>
+
+            <div>
+                <form method="post" action="/sign/PatientSave" enctype="multipart/form-data">
+                    <div class="sign_inner">
+                        <div>
+                            <div class="patientInfo">
+                                <div>이름</div>
+                                <input type="text" name="patientName">
+                            </div>
+                            <div class="patientInfo">
+                                <div>전화번호</div>
+                                <input type="text" name="tel">
+                            </div>
+                        </div>
+                        <div class="user_image">
+                            <img id="previewImage" src="#" style="width: 150px; height: 200px;"/>
+                            <div class="image_btn">
+                                <input type="file" name="filename" onchange=previewFile() style="width: 150px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="select">
+                        <select id="selectDoctor">
+                            <option>선택해주세요</option>
+                        </select>
+                        <select id="selectNurse">
+                            <option>선택해주세요</option>
+                        </select>
+                    </div>
+                    <input type="submit" value="회원가입" class="signPatientBtn">
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    function previewFile() {
+        const preview = document.getElementById('previewImage');
+        const file = document.querySelector('input[type=file]').files[0];
+        const reader = new FileReader();
+        console.log(file)
+        reader.onloadend = function () {
+            preview.src = reader.result;
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+        }
+    }
+
+
+    function fetchDoctors() {
+        fetch('/doctor/doctors')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('selectDoctor');
+                data.forEach(doctor => {
+                    const option = document.createElement('option');
+                    option.value = doctor.doctorId;
+                    option.text = doctor.doctorName + ' | ' + doctor.fieldOfMedicine;
+                    select.appendChild(option);
+                });
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error fetching doctors:', error);
+            });
+    }
+
+
+    function fetchNurses() {
+        fetch('/nurse/nurses')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('selectNurse');
+                data.forEach(nurse => {
+                    const option = document.createElement('option');
+                    option.value = nurse.nurseNumber;
+                    option.text = nurse.nurseName + ' | ' + nurse.functions;
+                    select.appendChild(option);
+                });
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+
+    let patientNum = 100000;
+
+    function fetchPatient() {
+        fetch('/Patient/patient_getAll')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(num => {
+                    if (patientNum === num.patientNum) {
+                        patientNum++;
+                    } else {
+                        console.log(patientNum);
+                    }
+                });
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+
+
+    fetchDoctors();
+    fetchNurses();
+    fetchPatient();
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        LoginCheck();
+
+    });
+
+    function LoginCheck() {
+
+
+        let patientName = document.querySelector('input[name="patientName"]').value;
+        let tel = document.querySelector('input[name="tel"]').value;
+
+        const queryParams = new URLSearchParams();
+        queryParams.append('name', patientName);
+        queryParams.append('tel', tel);
+
+        const url = '/Patient/patientOne?' + queryParams.toString();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(num => {
+                    patientNum = num.patientNum;
+                });
+                console.log(data);
+
+
+                fetchImage();
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+
+    let images = "";
+
+    function fetchImage() {
+        const image = document.querySelector('input[name="filename"]').files[0];
+        console.log(image);
+
+        const formData = new FormData();
+        formData.append('filename', image);
+
+        const url = '/sign/image';
+
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log("data " + data);
+                images = "/images/" + data;
+                patientDia();
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+
+    function patientDia() {
+        const selectedDoctorId = document.getElementById('selectDoctor').value;
+        const selectedNurseId = document.getElementById('selectNurse').value;
+
+
+        const data = {
+            patientNum: patientNum,
+            patientName: document.querySelector('input[name="patientName"]').value,
+            tel: document.querySelector('input[name="tel"]').value,
+            image: images
+        };
+
+        const queryParams = new URLSearchParams();
+        // queryParams.append('filename', document.querySelector('input[name="image"]').value);
+        queryParams.append('nurseID', selectedNurseId);
+        queryParams.append('doctorID', selectedDoctorId);
+
+        const url = '/sign/PatientSave?' + queryParams.toString();
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                // 응답 처리
+                console.log(response.data);
+                window.location.href = '/hospital/dir_chr';
+            })
+            .catch(error => {
+                console.error('Error submitting form:', error);
+            });
+    }
+
+</script>
+</body>
+</html>

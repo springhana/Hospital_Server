@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hospital</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+<div class="home">
+    <div class="home_inner">
+        <div class="home_contain">
+            <div class="home_Nav_bar">
+                <span class="home_Link"><a href="/hospital/userLogin">자기 정보 보기</a></span>
+                <span class="home_Link"><a href="/hospital/doctorLogin">의사</a></span>
+                <span class="home_Link"><a href="/hospital/nurseLogin">간호사</a></span>
+                <span class="home_Link"><a href="/hospital">진료 신청</a></span>
+            </div>
+
+            <div class="home_diagnosis"><a href="/hospital/diagnosis">진료 신청</a></div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const postDoctor = async () => {
+        try {
+            const response = await fetch('/doctor/doctorPost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+            console.log('Response: ', data);
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
+
+    const postNurse = async () => {
+        try {
+            const response = await fetch('/nurse/nursePost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+            console.log('Response: ', data);
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
+    postDoctor();
+    postNurse();
+</script>
+</body>
+</html>

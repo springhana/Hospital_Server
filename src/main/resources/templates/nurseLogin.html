@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/nurseLogin.css}">
+</head>
+<body>
+<div class="nurse">
+    <div class="nurse_inner">
+        <div class="nurse_contain">
+
+            <div class="nurse_Nav_bar">
+                <span class="nurse_Link"><a href="/hospital/userLogin">자기 정보 보기</a></span>
+                <span class="nurse_Link"><a href="/hospital/doctorLogin">의사</a></span>
+                <span class="nurse_Link"><a href="/hospital/nurseLogin">간호사</a></span>
+                <span class="nurse_Link"><a href="/hospital">진료 신청</a></span>
+            </div>
+
+            <div id="NursePost">
+                <form method="post" action="/hospital/nurseLogin" enctype="application/x-www-form-urlencoded">
+                    <div class="nurseInfo">
+                        <div>간호사ID </div>
+                        <input type="text" name="doctorId">
+                    </div>
+                    <div class="nurseInfo">
+                        <div>이름 </div>
+                        <input type="text" name="doctorName">
+                    </div>
+                    <input type="submit" value="로그인" class="nurseBtn">
+                </form>
+            </div>
+
+            <div id="NurseDiv" style="display: none;">
+                <h2>간호사 정보.</h2>
+                <p>간호사 ID: <span id="patientNum"></span></p>
+                <p>이름: <span id="patientName"></span></p>
+                <p>전화번호: <span id="tel"></span></p>
+            </div>
+
+            <div id="ChartDiv" style="display: none;">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        NurseLogin();
+
+    });
+
+    function NurseLogin() {
+        let doctorId = document.querySelector('input[name="doctorId"]').value;
+        let doctorName = document.querySelector('input[name="doctorName"]').value;
+
+        const queryParams = new URLSearchParams();
+        queryParams.append('name', doctorName);
+        queryParams.append('number', doctorId);
+
+        const url = '/nurse/nurseOne?' + queryParams.toString();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const patientNumElement = document.getElementById('patientNum');
+                const patientNameElement = document.getElementById('patientName');
+                const telElement = document.getElementById('tel');
+                const dataDiv = document.getElementById('NurseDiv');
+                const PatientPost = document.getElementById('NursePost');
+
+                if (data.length > 0) {
+                    const item = data[0];
+                    patientNumElement.textContent = item.nurseNumber;
+                    patientNameElement.textContent = item.nurseName;
+                    telElement.textContent = item.tel;
+
+                    PatientPost.style.display = 'none'
+                    dataDiv.style.display = 'block'; // 데이터가 있을 때 보이게 함
+
+                    const id = item.nurseNumber;
+                    chartOne(id);
+                } else {
+                    dataDiv.style.display = 'none'; // 데이터가 없을 때 숨김
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+
+    function chartOne(number) {
+
+        const queryParams = new URLSearchParams();
+        queryParams.append('number', number);
+
+        const url = '/chart/chartOne?' + queryParams.toString();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                const dataDiv = document.getElementById('ChartDiv');
+
+
+                if (data.length > 0) {
+                    // Clear previous data
+                    dataDiv.innerHTML = '';
+
+                    for (let i = 0; i < data.length; i++) {
+                        const chartNum = data[i].chartNum;
+                        const chartContent = data[i].chartContent;
+                        const patient_patientName = data[i].diagnosis.patient.patientName;
+                        const patient_Tel = data[i].diagnosis.patient.tel;
+                        const patient_diagnosis_num = data[i].diagnosis.patient.patientNum;
+
+                        // Create elements to display diagnosis data
+                        const diagnosisNumElement = document.createElement('p');
+                        diagnosisNumElement.textContent = '차트번호: ' + chartNum;
+
+                        const chartContentElement = document.createElement('p');
+                        chartContentElement.textContent = '차트내용: ' + chartContent;
+
+                        const patient_patientNameElement = document.createElement('p');
+                        patient_patientNameElement.textContent = '환자이름: ' + patient_patientName;
+
+                        const patient_TelElement = document.createElement('p');
+                        patient_TelElement.textContent = '환자 번호: ' + patient_Tel;
+
+                        const patient_diagnosis_numElement = document.createElement('p');
+                        patient_diagnosis_numElement.textContent = '환자번호: ' + patient_diagnosis_num;
+
+                        const hrElement = document.createElement('hr');
+
+                        // Append elements to the dataDiv
+                        dataDiv.appendChild(diagnosisNumElement);
+                        dataDiv.appendChild(chartContentElement);
+                        dataDiv.appendChild(patient_patientNameElement);
+                        dataDiv.appendChild(patient_TelElement);
+                        dataDiv.appendChild(patient_diagnosis_numElement);
+                        dataDiv.appendChild(hrElement);
+
+
+                        dataDiv.style.display = 'block'; // 데이터가 있을 때 보이게 함
+                    }
+                } else {
+                    dataDiv.style.display = 'none'; // 데이터가 없을 때 숨김
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+</script>
+</body>
+</html>

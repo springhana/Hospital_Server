@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/signDia_Chr.css}">
+</head>
+<body>
+<div class="signDia_Chr">
+    <div class="signDia_Chr_inner">
+        <div class="signDia_Chr_contain">
+
+            <div class="dia_chr_Nav_bar">
+                <span class="dia_chr_Link"><a href="/hospital/userLogin">자기 정보 보기</a></span>
+                <span class="dia_chr_Link"><a href="/hospital/doctorLogin">의사</a></span>
+                <span class="dia_chr_Link"><a href="/hospital/nurseLogin">간호사</a></span>
+                <span class="dia_chr_Link"><a href="/hospital">진료 신청</a></span>
+            </div>
+
+            <div>
+                <form method="post" action="/hospital" enctype="application/x-www-form-urlencoded">
+                    <div class="dia_chrInfo">
+                        <div>증상 </div>
+                        <input type="text" name="diagnosisContent">
+                    </div>
+                    <div class="dia_chrInfo">
+                        <div>차트 내용 </div>
+                        <input type="text" name="chartContent">
+                    </div>
+                    <input type="submit" value="회원가입" class="signDia_ChrBtn">
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+
+    let diagnosisNum = 200000;
+    let chartNum = 300000;
+
+    function fetchDiagnosisAll() {
+        fetch('/diagnosis/diagnosis_getAll')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(num => {
+                    if (diagnosisNum === num.diagnosisNum) {
+                        diagnosisNum++;
+                    } else {
+                        console.log(diagnosisNum);
+                    }
+                });
+                console.log(data);
+                fetchChartAll();
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+
+    function fetchChartAll() {
+        fetch('/chart/chart_getAll')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(num => {
+                    if (chartNum === num.chartNum) {
+                        chartNum++;
+                    } else {
+                        console.log(chartNum);
+                    }
+                });
+                console.log(data);
+                fetchDiagnosis();
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+
+
+    function fetchDiagnosis() {
+        const data = {
+            diagnosisNum: diagnosisNum,
+            diagnosisContent: document.querySelector('input[name="diagnosisContent"]').value,
+        };
+
+
+        const url = '/sign/DiagnosisSave?'
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                // 응답 처리
+                fetchChart();
+            })
+            .catch(error => {
+                console.error('Error submitting form:', error);
+            });
+
+    }
+
+
+    function fetchChart() {
+
+
+        const data = {
+            chartNum: chartNum,
+            chartContent: document.querySelector('input[name="chartContent"]').value,
+        };
+
+
+        const url = '/sign/ChartSave?'
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                // 응답 처리
+                window.location.href = '/hospital';
+            })
+            .catch(error => {
+                console.error('Error submitting form:', error);
+            });
+    }
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        fetchDiagnosisAll();
+    });
+
+
+</script>
+</body>
+</html>

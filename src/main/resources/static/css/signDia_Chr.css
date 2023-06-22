@@ -1,0 +1,126 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.signDia_Chr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+}
+.signDia_Chr_inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.signDia_Chr_contain {
+    width: 1000px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* overflow: hidden; */
+    background-color: #FFD663;
+    position: relative;
+    border: 2px solid black;
+}
+
+.signDia_Chr_contain::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translateX(50.5%) translateY(50.5%) rotate(45deg);
+    width: 200px;
+    height: 200px;
+    background: #fff;
+    border-left: 2px solid black;
+    z-index: 10;
+}
+
+.dia_chrInfo {
+    display: flex;
+    width: 700px;
+    height: 100px;
+    border: 2px solid #92CBDC;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dia_chrInfo:nth-child(1) {
+    border-bottom: none;
+}
+.dia_chrInfo:nth-child(2) {
+    border-top: none;
+}
+.dia_chrInfo input {
+    width: 400px;
+    height: 50px;
+    background: #FFFFFF;
+    text-align: center;
+    border: none;
+}
+.dia_chrInfo input:hover {
+    border: 2px solid #92CBDC;
+}
+.signDia_ChrBtn {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background: #FBBC19;
+    border: 2px solid #83620F;
+    top: 5px;
+    font-weight: bold;
+}
+.dia_chrInfo div {
+    position: relative;
+    left: -30px;
+    width: 140px;
+    font-size: 25px;
+    font-weight: bold;
+    color: #95a7af;
+}
+
+
+/* NavBar */
+.dia_chr_Nav_bar {
+    top: 0;
+    left: 0px;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dia_chr_Link {
+    margin: auto;
+    font-size: 20px;
+    transition: 0.2s ease-in-out;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    width: 100%;
+    height: 100%;
+    background-color: #FBE09B;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dia_chr_Link:nth-child(4) {
+    border-right: none;
+}
+.dia_chr_Link a {
+    text-decoration: none;
+    transition: .2s ease-in-out all;
+    color: #95a7af;
+}
+.dia_chr_Link a:hover {
+    color: tomato;
+    scale: 1.1;
+}

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/userLogin.css}">
+</head>
+<body>
+<div class="user">
+    <div class="user_inner">
+        <div class="user_contain">
+
+            <div class="user_Nav_bar">
+                <span class="user_Link"><a href="/hospital/userLogin">자기 정보 보기</a></span>
+                <span class="user_Link"><a href="/hospital/doctorLogin">의사</a></span>
+                <span class="user_Link"><a href="/hospital/nurseLogin">간호사</a></span>
+                <span class="user_Link"><a href="/hospital">진료 신청</a></span>
+            </div>
+
+            <div id="PatientPost">
+                <form method="post" action="/hospital/userLogin" enctype="application/x-www-form-urlencoded">
+                    <div class="userInfo">
+                        <div>이름 :</div>
+                        <input type="text" name="name"/></div>
+                    <div class="userInfo">
+                        <div>전화번호 :</div>
+                        <input type="text" name="tel"/></div>
+                    <input type="submit" value="로그인" class="userBtn">
+                </form>
+            </div>
+
+            <div id="PatientDiv" style="display: none;">
+                <div class="PatientDiv_inner">
+                    <div>
+                        <h2>회원님 정보입니다.</h2>
+                        <p>아이디: <span id="patientNum"></span></p>
+                        <p>이름: <span id="patientName"></span></p>
+                        <p>전화번호: <span id="tel"></span></p>
+                    </div>
+                    <div class="PatientDiv_image">
+                        <img id="patientImage" src="#" style="width: 80px;" height="100px">
+                    </div>
+                </div>
+            </div>
+
+            <div id="DiagnosisDiv" style="display: none;">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        UserLogin();
+
+    });
+
+    function UserLogin() {
+        let name = document.querySelector('input[name="name"]').value;
+        let tel = document.querySelector('input[name="tel"]').value;
+
+        const queryParams = new URLSearchParams();
+        queryParams.append('name', name);
+        queryParams.append('tel', tel);
+
+        const url = '/Patient/patientOne?' + queryParams.toString();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const patientNumElement = document.getElementById('patientNum');
+                const patientNameElement = document.getElementById('patientName');
+                const telElement = document.getElementById('tel');
+                const patientImage = document.getElementById("patientImage");
+                const dataDiv = document.getElementById('PatientDiv');
+                const PatientPost = document.getElementById('PatientPost');
+
+                if (data.length > 0) {
+                    const item = data[0];
+                    console.log(item.image)
+                    patientNumElement.textContent = item.patientNum;
+                    patientNameElement.textContent = item.patientName;
+                    telElement.textContent = item.tel;
+                    patientImage.src = item.image
+
+                    dataDiv.style.display = 'block'; // 데이터가 있을 때 보이게 함
+                    PatientPost.style.display = 'none'
+
+                    const id = item.patientNum;
+                    diagnosisOne_patientId(id);
+                } else {
+                    dataDiv.style.display = 'none'; // 데이터가 없을 때 숨김
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+
+    function diagnosisOne_patientId(number) {
+
+        const queryParams = new URLSearchParams();
+        queryParams.append('number', number);
+
+        const url = '/diagnosis/diagnosisOne_patientId?' + queryParams.toString();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                const dataDiv = document.getElementById('DiagnosisDiv');
+                const PatientPost = document.getElementById('PatientPost');
+
+                if (data.length > 0) {
+                    // Clear previous data
+                    dataDiv.innerHTML = '';
+
+                    for (let i = 0; i < data.length; i++) {
+                        const diagnosisNum = data[i].diagnosisNum;
+                        const diagnosisContent = data[i].diagnosisContent;
+                        const diagnosisDate = data[i].diagnosisDate;
+                        const doctorName = data[i].doctor.doctorName;
+                        const doctorTel = data[i].doctor.tel;
+
+
+                        // Create elements to display diagnosis data
+                        const diagnosisNumElement = document.createElement('p');
+                        diagnosisNumElement.textContent = '진료번호: ' + diagnosisNum;
+
+                        const diagnosisContentElement = document.createElement('p');
+                        diagnosisContentElement.textContent = '진료내용: ' + diagnosisContent;
+
+                        const diagnosisDateElement = document.createElement('p');
+                        diagnosisDateElement.textContent = '진료날짜: ' + diagnosisDate;
+
+                        const diagnosisDoctorNameElement = document.createElement('p');
+                        diagnosisDoctorNameElement.textContent = '의사 이름: ' + doctorName;
+
+                        const diagnosisDoctorTelElement = document.createElement('p');
+                        diagnosisDoctorTelElement.textContent = '의사 전화번호: ' + doctorTel;
+
+                        const diagnosisDoctorDelete = document.createElement('button');
+                        diagnosisDoctorDelete.textContent = '취소하기';
+
+                        diagnosisDoctorDelete.addEventListener('click', () => {
+                            const confirmed = confirm("정말로 취소하시겠습니까?");
+                            if (confirmed) {
+                                deleteChart(diagnosisNum);
+                            }
+                        });
+
+                        const hrElement = document.createElement('hr');
+
+                        // Append elements to the dataDiv
+                        dataDiv.appendChild(diagnosisNumElement);
+                        dataDiv.appendChild(diagnosisContentElement);
+                        dataDiv.appendChild(diagnosisDateElement);
+                        dataDiv.appendChild(diagnosisDoctorNameElement);
+                        dataDiv.appendChild(diagnosisDoctorTelElement);
+                        dataDiv.appendChild(diagnosisDoctorDelete);
+                        dataDiv.appendChild(hrElement);
+                    }
+                    dataDiv.style.display = 'block'; // 데이터가 있을 때 보이게 함
+                    PatientPost.style.display = 'none'
+                } else {
+                    dataDiv.style.display = 'none'; // 데이터가 없을 때 숨김
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching nurses:', error);
+            });
+    }
+
+    function deleteDiagnosis(diagnosisNum) {
+        const queryParams = new URLSearchParams();
+        queryParams.append('number', diagnosisNum);
+
+        const url = '/diagnosis?' + queryParams.toString();
+
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('진단 정보가 성공적으로 삭제되었습니다.');
+                } else {
+                    console.error('오류 발생:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('네트워크 오류:', error);
+            });
+    }
+
+    function deleteChart(diagnosisNum) {
+        const queryParams = new URLSearchParams();
+        queryParams.append('number', diagnosisNum);
+
+        const url = '/chart?' + queryParams.toString();
+
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    deleteDiagnosis(diagnosisNum)
+                    console.log('진단 정보가 성공적으로 삭제되었습니다.');
+                } else {
+                    console.error('오류 발생:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('네트워크 오류:', error);
+            });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.nurse {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+}
+.nurse_inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.nurse_contain {
+    width: 1000px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* overflow: hidden; */
+    background-color: #FFD663;
+    position: relative;
+    border: 2px solid black;
+}
+
+.nurse_contain::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translateX(50.5%) translateY(50.5%) rotate(45deg);
+    width: 200px;
+    height: 200px;
+    background: #fff;
+    border-left: 2px solid black;
+    z-index: 10;
+}
+.nurseInfo {
+    display: flex;
+    width: 700px;
+    height: 100px;
+    border: 2px solid #92CBDC;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.nurseInfo:nth-child(1) {
+    border-bottom: none;
+}
+.nurseInfo:nth-child(2) {
+    border-top: none;
+}
+.nurseInfo input {
+    width: 400px;
+    height: 50px;
+    background: #FFFFFF;
+    text-align: center;
+    border: none;
+}
+.nurseInfo input:hover {
+    border: 2px solid #92CBDC;
+}
+.nurseBtn {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background: #FBBC19;
+    border: 2px solid #83620F;
+    top: 5px;
+    font-weight: bold;
+}
+.nurseInfo div {
+    position: relative;
+    left: -30px;
+    width: 140px;
+    font-size: 25px;
+    font-weight: bold;
+    color: #95a7af;
+}
+#NurseDiv {
+    width: 900px;
+    background: #FFFFFF;
+    border: 2px solid #92CBDC;
+    color: #95a7af;
+    box-shadow: 1px 1px 1px #92CBDC;
+}
+#NurseDiv h2 {
+    text-align: center;
+}
+#ChartDiv {
+    position: relative;
+    top: 10px;
+    width: 900px;
+    height: 280px;
+    background: #FFFFFF;
+    border: 2px solid #92CBDC;
+    color: #95a7af;
+    overflow: auto;
+    box-shadow: 1px 1px 1px #92CBDC;
+}
+
+
+/* NavBar */
+.nurse_Nav_bar {
+    top: 0;
+    left: 0px;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nurse_Link {
+    margin: auto;
+    font-size: 20px;
+    transition: 0.2s ease-in-out;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    width: 100%;
+    height: 100%;
+    background-color: #FBE09B;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nurse_Link:hover {
+    color: tomato;
+}
+.nurse_Link a {
+    text-decoration: none;
+    transition: .2s ease-in-out all;
+    color: #95a7af;
+}
+.nurse_Link a:hover {
+    color: tomato;
+    scale: 1.1;
+}

@@ -1,0 +1,163 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.signPatient {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+}
+.signPatient_inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.signPatient_contain {
+    width: 1000px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFD663;
+    position: relative;
+    border: 2px solid black;
+}
+
+.signPatient_contain::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translateX(50.5%) translateY(50.5%) rotate(45deg);
+    width: 200px;
+    height: 200px;
+    background: #fff;
+    border-left: 2px solid black;
+    z-index: 10;
+}
+.sign_inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.user_image {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    bottom: 15px;
+    left: 15px;
+}
+.image_btn input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#previewImage {
+    background: white;
+    border: 2px solid #92CBDC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.patientInfo {
+    display: flex;
+    width: 700px;
+    height: 100px;
+    border: 2px solid #92CBDC;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.patientInfo:nth-child(1) {
+    border-bottom: none;
+}
+.patientInfo:nth-child(2) {
+    border-top: none;
+}
+.patientInfo input {
+    width: 400px;
+    height: 50px;
+    background: #FFFFFF;
+    text-align: center;
+    border: none;
+}
+.patientInfo input:hover {
+    border: 2px solid #92CBDC;
+}
+.signPatientBtn {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background: #FBBC19;
+    border: 2px solid #83620F;
+    top: 5px;
+    font-weight: bold;
+}
+.patientInfo div {
+    position: relative;
+    left: -30px;
+    width: 140px;
+    font-size: 25px;
+    font-weight: bold;
+    color: #95a7af;
+}
+.select {
+    width: 100%;
+    height: 50px;
+    display: flex;
+}
+.select option {
+    text-align: center;
+}
+#selectDoctor {
+    width: 50%;
+}
+#selectNurse {
+    width: 50%;
+}
+
+/* NavBar */
+.patient_Nav_bar {
+    top: 0;
+    left: 0px;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.patient_Link {
+    margin: auto;
+    font-size: 20px;
+    transition: 0.2s ease-in-out;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    width: 100%;
+    height: 100%;
+    background-color: #FBE09B;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.patient_Link:nth-child(4) {
+    border-right: none;
+}
+.patient_Link a {
+    text-decoration: none;
+    transition: .2s ease-in-out all;
+    color: #95a7af;
+}
+.patient_Link a:hover {
+    color: tomato;
+    scale: 1.1;
+}
